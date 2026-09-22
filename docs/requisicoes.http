@@ -1,0 +1,27 @@
+### Saúde da aplicação
+GET http://localhost:8000/health
+
+### Criar pedido
+POST http://localhost:8000/pedidos
+Content-Type: application/json
+
+{
+  "cliente": "Giovanne",
+  "produto": "Teclado mecânico",
+  "quantidade": 2,
+  "valor_unitario": 199.90
+}
+
+### Consultar pedido pelo id
+GET http://localhost:8000/pedidos/1
+
+### Listar todos os pedidos
+GET http://localhost:8000/pedidos
+
+### Alterar status do pedido
+PATCH http://localhost:8000/pedidos/1/status
+Content-Type: application/json
+
+{
+  "status": "CONFIRMADO"
+}
