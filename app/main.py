@@ -27,7 +27,12 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="API de Pedidos", version="1.0.0", lifespan=lifespan)
+app = FastAPI(
+    title="API de Pedidos",
+    description="API REST para gerenciamento de pedidos — Trabalho 1 de Sistemas Distribuídos.",
+    version="1.0.0",
+    lifespan=lifespan,
+)
 app.include_router(pedidos_router)
 
 
