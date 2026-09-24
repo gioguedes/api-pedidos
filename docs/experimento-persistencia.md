@@ -45,3 +45,7 @@ A aplicação de Pedidos é *stateless*: ela não guarda estado. O estado do sis
 Reiniciar o container `pedidos` apenas recria o processo da API (FastAPI/uvicorn); o volume do banco não é tocado. Por isso o pedido continua disponível após o restart.
 
 O dado só seria apagado com `docker compose down -v`, que remove o volume.
+
+## Resultado observado
+
+Executado em 23/09/2026. Pedido de id 1 criado via POST /pedidos. Após `docker compose restart pedidos`, o GET /pedidos/1 retornou o mesmo pedido com os mesmos dados, confirmando que o estado está no PostgreSQL (volume `dados-postgres`) e não na aplicação.
