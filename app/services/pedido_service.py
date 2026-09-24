@@ -9,6 +9,21 @@ class PedidoNaoEncontradoError(Exception):
     """Lançado quando o pedido não existe; a camada de API traduz para 404."""
 
 
+class TransicaoStatusInvalidaError(Exception):
+    """Lançado quando a mudança de status não é permitida; a camada de API traduz para 409."""
+
+    def __init__(self, atual: StatusPedido, novo: StatusPedido):
+        super().__init__(f"Transição de status inválida: {atual.value} -> {novo.value}")
+
+
+# Regra de negócio: transições de status permitidas (CANCELADO é estado final)
+TRANSICOES_PERMITIDAS: dict[StatusPedido, set[StatusPedido]] = {
+    StatusPedido.CRIADO: {StatusPedido.CONFIRMADO, StatusPedido.CANCELADO},
+    StatusPedido.CONFIRMADO: {StatusPedido.CANCELADO},
+    StatusPedido.CANCELADO: set(),
+}
+
+
 class PedidoService:
     """Concentra a lógica da aplicação e coordena as operações."""
 
@@ -41,4 +56,6 @@ class PedidoService:
         pedido = self.repository.buscar_por_id(pedido_id)
         if pedido is None:
             raise PedidoNaoEncontradoError(pedido_id)
+        if status not in TRANSICOES_PERMITIDAS[pedido.status]:
+            raise TransicaoStatusInvalidaError(pedido.status, status)
         return self.repository.atualizar_status(pedido, status)

@@ -50,6 +50,16 @@ docker compose down -v     # para os containers e apaga o volume de dados
 | PATCH | `/pedidos/{id}/status` | Altera o status (`CRIADO`, `CONFIRMADO`, `CANCELADO`) |
 | GET | `/health` | Retorna `{ "status": "ok" }` |
 
+### Transições de status
+
+| Status atual | Pode ir para |
+|---|---|
+| `CRIADO` | `CONFIRMADO`, `CANCELADO` |
+| `CONFIRMADO` | `CANCELADO` |
+| `CANCELADO` | — (estado final) |
+
+Transições fora dessa tabela retornam **409 Conflict**.
+
 ### Exemplo de criação
 
 ```bash

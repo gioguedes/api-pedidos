@@ -3,7 +3,11 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.schemas.pedido import PedidoCreate, PedidoResponse, PedidoStatusUpdate
-from app.services.pedido_service import PedidoNaoEncontradoError, PedidoService
+from app.services.pedido_service import (
+    PedidoNaoEncontradoError,
+    PedidoService,
+    TransicaoStatusInvalidaError,
+)
 
 router = APIRouter(prefix="/pedidos", tags=["pedidos"])
 
@@ -32,3 +36,5 @@ def alterar_status(pedido_id: int, dados: PedidoStatusUpdate, db: Session = Depe
         return PedidoService(db).alterar_status(pedido_id, dados.status)
     except PedidoNaoEncontradoError:
         raise HTTPException(status_code=404, detail="Pedido não encontrado")
+    except TransicaoStatusInvalidaError as erro:
+        raise HTTPException(status_code=409, detail=str(erro))
